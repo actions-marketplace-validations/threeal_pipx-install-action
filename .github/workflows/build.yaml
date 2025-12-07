@@ -5,50 +5,36 @@ on:
   push:
     branches: [main]
 jobs:
-  package-library:
-    name: Package Library
-    runs-on: ubuntu-latest
+  build-project:
+    name: Build Project
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.2
+      - name: Checkout Project
+        uses: actions/checkout@v5.0.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: latest
+      - name: Setup pnpm
+        uses: threeal/setup-pnpm-action@v1.0.0
 
-      - name: Setup Yarn
-        uses: threeal/setup-yarn-action@v2.0.0
-        with:
-          version: stable
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: Package Workspace
-        run: yarn workspace pipx-install-action pack
+      - name: Check Types
+        run: pnpm tsc
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: pipx-install-action
-          path: pipx-install-action/package.tgz
+      - name: Test Project
+        run: pnpm test
 
-  build-workspaces:
-    name: Build Workspaces
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.2
+      - name: Check Formatting
+        run: pnpm prettier --check .
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: latest
+      - name: Check Lint
+        run: pnpm eslint
 
-      - name: Setup Yarn
-        uses: threeal/setup-yarn-action@v2.0.0
-        with:
-          version: stable
+      - name: Package Library
+        run: pnpm pack
 
-      - name: Build Workspaces
-        run: |
-          yarn workspaces foreach --all --topological run build
-          git diff --exit-code HEAD
+      - name: Build Action
+        run: pnpm rollup -c && git diff --exit-code dist/action
+
+      - name: Build Documentation
+        run: pnpm typedoc

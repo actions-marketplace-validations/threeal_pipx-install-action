@@ -5,72 +5,34 @@ on:
   push:
     branches: [main]
 jobs:
-  check-workspaces:
-    name: Check Workspaces
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: latest
-
-      - name: Setup Yarn
-        uses: threeal/setup-yarn-action@v2.0.0
-        with:
-          version: stable
-
-      - name: Check Format
-        run: |
-          yarn workspaces foreach --all --topological run format
-          git diff --exit-code HEAD
-
-      - name: Check Lint
-        run: yarn workspaces foreach --all --topological run lint
-
-  test-workspaces:
-    name: Test Workspaces
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: latest
-
-      - name: Setup Yarn
-        uses: threeal/setup-yarn-action@v2.0.0
-        with:
-          version: stable
-
-      - name: Test Workspaces
-        run: yarn workspaces foreach --all --topological run test
-
   test-action:
     name: Test Action
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, ubuntu, macos]
+        os: [ubuntu-24.04, macos-14, windows-2022]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.2
+      - name: Checkout Action
+        uses: actions/checkout@v5.0.0
         with:
           path: pipx-install-action
           sparse-checkout: |
-            action.yaml
+            action.yml
             dist
           sparse-checkout-cone-mode: false
 
       - name: Install Packages
         uses: ./pipx-install-action
         with:
-          packages: black ruff
+          packages: black ruff==0.3.0
 
       - name: Check Packages
-        run: black --version && ruff --version
+        shell: bash
+        run: |
+          black --version
+          VERSION="$(ruff --version)"
+          if [ "$VERSION" != "ruff 0.3.0" ]; then
+            echo "Expected 'ruff 0.3.0' but instead got '$VERSION'"
+            exit 1
+          fi

@@ -1,0 +1,39 @@
+name: Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      pages: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-docs.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup pnpm
+        uses: threeal/setup-pnpm-action@v1.0.0
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Documentation
+        run: pnpm typedoc
+
+      - name: Upload Documentation
+        uses: actions/upload-pages-artifact@v4.0.0
+        with:
+          path: docs
+
+      - name: Deploy Documentation
+        id: deploy-docs
+        uses: actions/deploy-pages@v4.0.5

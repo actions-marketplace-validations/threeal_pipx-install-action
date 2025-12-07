@@ -1,0 +1,23 @@
+pre-commit:
+  piped: true
+  jobs:
+    - name: install dependencies
+      run: pnpm install
+
+    - name: check types
+      run: pnpm tsc
+
+    - name: fix formatting
+      run: pnpm prettier --write .
+
+    - name: fix lint
+      run: pnpm eslint --fix
+
+    - name: check documentation
+      run: pnpm typedoc --emit none
+
+    - name: build action
+      run: pnpm rollup -c
+
+    - name: check diff
+      run: git diff --exit-code dist/action pnpm-lock.yaml {staged_files}

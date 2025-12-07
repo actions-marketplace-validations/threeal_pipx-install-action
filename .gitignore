@@ -1,10 +1,10 @@
 .*
-!.env.yarn
-!.eslint*
 !.git*
-!.prettierignore
+!.npmrc
+!.prettier*
 
-coverage/
+dist/lib/
+docs/
 node_modules/
 
-package.tgz
+*.tgz

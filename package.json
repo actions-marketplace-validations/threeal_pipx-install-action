@@ -31,26 +31,33 @@
     "cache-action": "^1.0.0",
     "catched-error-message": "^0.0.1",
     "gha-utils": "^0.4.1",
-    "lefthook": "^2.1.5"
+    "lefthook": "^2.1.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@tsconfig/node24": "^24.0.4",
+    "@tsconfig/node24": "^24.0.5",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.1",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.2.0",
-    "jiti": "^2.6.1",
-    "prettier": "^3.8.3",
+    "@types/node": "^26.3.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^10.9.1",
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.6",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "rollup": "^4.60.1",
+    "rollup": "^4.63.0",
     "tslib": "^2.8.1",
-    "typedoc": "^0.28.18",
+    "typedoc": "^0.28.20",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1",
-    "vitest": "^4.0.18"
+    "typescript-eslint": "^8.68.0",
+    "vitest": "^4.1.10"
   },
-  "packageManager": "pnpm@10.33.4"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.20.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.25.0"
 }
